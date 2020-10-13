@@ -15,19 +15,18 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /workspace
+
 ENV CMAKE_VERSION=3.18.4
 RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}-Linux-x86_64.sh \
     && chmod +x cmake-${CMAKE_VERSION}-Linux-x86_64.sh \
     && ./cmake-${CMAKE_VERSION}-Linux-x86_64.sh --prefix=/usr --skip-license \
     && rm cmake-${CMAKE_VERSION}-Linux-x86_64.sh
 
-WORKDIR /workspace
 RUN wget --quiet -O- https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz | tar -xz \
     && cd boost_1_65_1 \
     && ./bootstrap.sh --with-python=$(which python) \
     && ./b2 install
 
-WORKDIR /workspace
 RUN git clone --branch v2.5.3 https://github.com/AcademySoftwareFoundation/openexr.git \
     && mkdir -p openexr/build \
     && cd openexr/build \
@@ -39,7 +38,6 @@ RUN git clone --branch v2.5.3 https://github.com/AcademySoftwareFoundation/opene
     && cd ../PyIlmBase \
     && ./bootstrap && ./configure && make && make install && ldconfig
 
-WORKDIR /workspace
 RUN git clone --branch 1.7.15-fix https://github.com/narumiruna/alembic.git \
     && cd alembic \
     && mkdir build \
