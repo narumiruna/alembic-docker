@@ -44,9 +44,8 @@ RUN git clone --branch v2.5.3 https://github.com/AcademySoftwareFoundation/opene
     && rm -rf openexr
 
 RUN git clone --branch 1.7.15-fix https://github.com/narumiruna/alembic.git \
-    && cd alembic \
-    && mkdir build \
-    && cd build \
+    && mkdir -p alembic/build \
+    && cd alembic/build \
     && cmake \
     -DUSE_PYALEMBIC=ON \
     .. \
