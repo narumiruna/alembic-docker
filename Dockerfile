@@ -25,7 +25,9 @@ RUN wget --quiet https://github.com/Kitware/CMake/releases/download/v${CMAKE_VER
 RUN wget --quiet -O- https://dl.bintray.com/boostorg/release/1.65.1/source/boost_1_65_1.tar.gz | tar -xz \
     && cd boost_1_65_1 \
     && ./bootstrap.sh --with-python=$(which python) \
-    && ./b2 install
+    && ./b2 install \
+    && cd .. \
+    && rm -rf boost_1_65_1
 
 RUN git clone --branch v2.5.3 https://github.com/AcademySoftwareFoundation/openexr.git \
     && mkdir -p openexr/build \
@@ -33,10 +35,13 @@ RUN git clone --branch v2.5.3 https://github.com/AcademySoftwareFoundation/opene
     && cmake .. \
     && make -j$(nproc) install \
     && ldconfig \
+    && cp python2_7/imathnumpy.so /usr/local/lib/python2.7/dist-packages/imathnumpy.so \
     && cd ../IlmBase \
     && ./bootstrap && ./configure && make && make install && ldconfig \
     && cd ../PyIlmBase \
-    && ./bootstrap && ./configure && make && make install && ldconfig
+    && ./bootstrap && ./configure && make && make install && ldconfig \
+    && cd ../.. \
+    && rm -rf openexr
 
 RUN git clone --branch 1.7.15-fix https://github.com/narumiruna/alembic.git \
     && cd alembic \
@@ -46,4 +51,6 @@ RUN git clone --branch 1.7.15-fix https://github.com/narumiruna/alembic.git \
     -DUSE_PYALEMBIC=ON \
     .. \
     && make -j$(nproc) install \
-    && mv /usr/local/lib/python2.7/site-packages/alembic.so /usr/local/lib/python2.7/dist-packages/alembic.so
+    && mv /usr/local/lib/python2.7/site-packages/alembic.so /usr/local/lib/python2.7/dist-packages/alembic.so \
+    && cd ../.. \
+    && rm -rf alembic
